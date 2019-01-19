@@ -64,7 +64,7 @@ def loaders_mnist(dataset, batch_size=64, cuda=0,
                   test_batch_size=1000, augment=False, **kwargs):
 
     assert dataset == 'mnist'
-    root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+    root = './{}'.format(dataset)
 
     # Data loading code
     normalize = transforms.Normalize(mean=(0.1307,),
@@ -92,7 +92,7 @@ def loaders_cifar(dataset, batch_size, cuda,
     assert dataset in ('cifar10', 'cifar100')
     # assert topk is None or topk == 1, "Top-k not wanted for CIFAR for now"
 
-    root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+    root = './{}'.format(dataset)
 
     # Data loading code
     mean = [125.3, 123.0, 113.9]
@@ -117,11 +117,11 @@ def loaders_cifar(dataset, batch_size, cuda,
     # on training and validation (no augmentation on validation)
     dataset = datasets.CIFAR10 if dataset == 'cifar10' else datasets.CIFAR100
     dataset_train = dataset(root=root, train=True,
-                            transform=transform_train)
+                            transform=transform_train, download=True)
     dataset_val = dataset(root=root, train=True,
-                          transform=transform_test)
+                          transform=transform_test, download=True)
     dataset_test = dataset(root=root, train=False,
-                           transform=transform_test)
+                           transform=transform_test, download=True)
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
@@ -134,7 +134,7 @@ def loaders_svhn(dataset, batch_size, cuda,
 
     assert dataset == 'svhn'
 
-    root = '{}/{}'.format(os.environ['VISION_DATA'], dataset)
+    root = './{}'.format(dataset)
 
     # Data loading code
     mean = [0.4380, 0.4440, 0.4730]
@@ -160,11 +160,11 @@ def loaders_svhn(dataset, batch_size, cuda,
     # on training and validation (no augmentation on validation)
     dataset = datasets.SVHN
     dataset_train = dataset(root=root, split='train',
-                            transform=transform_train)
+                            transform=transform_train, download=True)
     dataset_val = dataset(root=root, split='train',
-                          transform=transform_test)
+                          transform=transform_test, download=True)
     dataset_test = dataset(root=root, split='test',
-                           transform=transform_test)
+                           transform=transform_test, download=True)
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
