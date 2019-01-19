@@ -79,7 +79,7 @@ jobs = {
 
 
 if __name__ == "__main__":
-    if len(sys.argv != 1):
+    if len(sys.argv) != 1:
         r = range(1, len(sys.argv))  # pass job codes as params
         toLaunch = [sys.argv[i] for i in r]
     else:
