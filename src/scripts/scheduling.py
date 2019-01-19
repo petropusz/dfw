@@ -19,7 +19,9 @@ def run_command(command, noprint=True):
 
 
 def launch(jobs, interval):
-    for i, job in enumerate(jobs):
-        print("\nJob {} out of {}".format(i + 1, len(jobs)))
+    i = 0
+    for name, job in jobs:
+        i += 1
+        print("\nJob {}, {} out of {}".format(name, i, len(jobs)))
         run_command(job)
         time.sleep(interval)

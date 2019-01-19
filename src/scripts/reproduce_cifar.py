@@ -1,5 +1,5 @@
 from scheduling import launch
-
+import sys
 
 jobs = [
 
@@ -79,4 +79,6 @@ jobs = [
 
 
 if __name__ == "__main__":
-    launch(jobs, interval=3)
+    r = range(1, len(sys.argv))  # pass job codes as params
+    toLaunch = [sys.argv[i] for i in r]
+    launch([(jobName, jobs[jobName]) for jobName in toLaunch], interval=3)
