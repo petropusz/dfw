@@ -23,5 +23,5 @@ def launch(jobs, interval):
     for name, job in jobs:
         i += 1
         print("\nJob {}, {} out of {}".format(name, i, len(jobs)))
-        run_command(job)
+        run_command(job, noprint=False)
         time.sleep(interval)
