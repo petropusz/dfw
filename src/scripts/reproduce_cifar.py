@@ -16,7 +16,7 @@ jobs = {
     """python main.py --dataset cifar100 --densenet --opt sgd --l2 1e-4 --eta 0.1 --T 150 225 --decay-factor 0.1 --no-tqdm""",
 
     "DFW-CIFAR-10-WRN":
-    """python main.py --dataset cifar10 --wrn --opt dfw --epochs 2 --l2 1e-4 --eta 1. --loss svm --smooth --no-tqdm""",
+    """python main.py --dataset cifar10 --wrn --opt dfw --l2 1e-4 --eta 1. --loss svm --smooth --no-tqdm""",
 
     "DFW-CIFAR-100-WRN":
     """python main.py --dataset cifar100 --wrn --opt dfw --l2 1e-4 --eta 1. --loss svm --smooth --no-tqdm""",
