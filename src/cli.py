@@ -144,7 +144,6 @@ def filter_args(args):
             args.growth = 40
         if not args.batch_size:
             args.batch_size = 64
-
         if args.epochs is None:
             args.epochs = 300
 
