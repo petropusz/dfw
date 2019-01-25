@@ -46,7 +46,7 @@ def train(model, loss, optimizer, loader, xp, args):
           '({timer:.2f}s)\t'
           'Obj {obj:.3f}\t'
           'Loss {loss:.3f}\t'
-          'Acc {acc:.2f}%\t'
+          'Acc {acc:.2f}%'
           .format(int(xp.Epoch.value),
                   timer=xp.Timer_Train.value,
                   acc=xp.Acc_Train.value,
@@ -76,10 +76,10 @@ def test(model, loader, xp, args):
     Timer.update().log()
     Acc.log()
     print('Epoch: [{0}] ({tag})\t'
-          '({timer:.2f}s) \t'
+          '({timer:.2f}s)\t'
           'Obj ----\t'
           'Loss ----\t'
-          'Acc {acc:.2f}% \t'
+          'Acc {acc:.2f}%'
           .format(int(xp.Epoch.value),
                   tag=loader.tag.title(),
                   timer=Timer.value,
