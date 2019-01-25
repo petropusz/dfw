@@ -10,8 +10,8 @@ def get_loss(args):
     else:
         raise ValueError
 
-    print('L2 regularization: \t {}'.format(args.l2))
-    print('\nLoss function:')
+    print('L2 regularization: {}\n'.format(args.l2))
+    print('Loss function:')
     print(loss_fn)
 
     if args.cuda:

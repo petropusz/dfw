@@ -36,9 +36,9 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     dataset_val = Subset(dataset_val, val_indices)
     dataset_test = Subset(dataset_test, test_indices)
 
-    print('Dataset sizes: \t train: {} \t val: {} \t test: {}'
+    print('Dataset sizes:\ttrain: {}\tval: {}\ttest: {}'
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
-    print('Batch size: \t {}'.format(batch_size))
+    print('Batch size:\t{}'.format(batch_size))
 
     train_loader = data.DataLoader(dataset_train,
                                    batch_size=batch_size,

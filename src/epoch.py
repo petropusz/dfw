@@ -42,8 +42,8 @@ def train(model, loss, optimizer, loader, xp, args):
     xp.Obj_Train.update(xp.Reg.value + xp.Loss_Train.value)
     xp.Timer_Train.update()
 
-    print('\nEpoch: [{0}] (Train) \t'
-          '({timer:.2f}s) \t'
+    print('\nEpoch: [{0}] (Train)\t'
+          '({timer:.2f}s)\t'
           'Obj {obj:.3f}\t'
           'Loss {loss:.3f}\t'
           'Acc {acc:.2f}%\t'

@@ -30,7 +30,7 @@ def get_optimizer(args, parameters):
     else:
         raise ValueError(args.opt)
 
-    print("Optimizer: \t {}".format(args.opt.upper()))
+    print("Optimizer: {}".format(args.opt.upper()))
 
     optimizer.gamma = 1
     optimizer.eta = args.eta

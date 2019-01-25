@@ -17,7 +17,7 @@ def set_seed(args, print_out=True):
         np.random.seed(None)
         args.seed = np.random.randint(1e5)
     if print_out:
-        print('Seed:\t {}'.format(args.seed))
+        print('Seed:\t{}'.format(args.seed))
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
@@ -94,7 +94,7 @@ def accuracy(out, targets, topk=1):
         correct = pred.eq(targets.view(1, -1).expand_as(pred))
         acc = correct[:topk].view(-1).float().sum(0) / out.size(0)
 
-    return 100. * acc
+    return 100.0 * acc
 
 
 def update_metrics(xp, state):

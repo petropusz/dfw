@@ -3,7 +3,7 @@ from data.loaders import loaders_cifar, loaders_mnist, loaders_svhn
 
 def get_data_loaders(args):
 
-    print('Dataset: \t {}'.format(args.dataset.upper()))
+    print('Dataset: {}'.format(args.dataset.upper()))
 
     # remove values if None
     for k in ('train_size', 'val_size', 'test_size'):
