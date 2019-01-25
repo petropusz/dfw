@@ -28,13 +28,13 @@ jobs = {
     """python main.py --dataset cifar100 --densenet --opt dfw --l2 1e-4 --eta 0.1 --loss svm --smooth --no-tqdm""",
 
     "ADAM-CIFAR-10-WRN":
-    """python main.py --dataset cifar10 --wrn --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
+    """python main.py --dataset cifar10 --wrn --epochs 75 --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
 
     "ADAM-CIFAR-100-WRN":
     """python main.py --dataset cifar100 --wrn --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
 
     "ADAM-CIFAR-10-DN":
-    """python main.py --dataset cifar10 --densenet --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
+    """python main.py --dataset cifar10 --densenet --epochs 75 --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
 
     "ADAM-CIFAR-100-DN":
     """python main.py --dataset cifar100 --densenet --opt adam --l2 1e-4 --eta 1e-3 --no-tqdm""",
@@ -64,13 +64,13 @@ jobs = {
     """python main.py --dataset cifar100 --densenet --opt amsgrad --l2 1e-4 --eta 1e-3 --no-tqdm""",
 
     "BPGRAD-CIFAR-10-WRN":
-    """python main.py --dataset cifar10 --wrn --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
+    """python main.py --dataset cifar10 --wrn --epochs 75 --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
 
     "BPGRAD-CIFAR-100-WRN":
     """python main.py --dataset cifar100 --wrn --opt bpgrad --l2 5e-4 --eta 0.1 --no-tqdm""",
 
     "BPGRAD-CIFAR-10-DN":
-    """python main.py --dataset cifar10 --densenet --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
+    """python main.py --dataset cifar10 --densenet --epochs 75 --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
 
     "BPGRAD-CIFAR-100-DN":
     """python main.py --dataset cifar100 --densenet --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
