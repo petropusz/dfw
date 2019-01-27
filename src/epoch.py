@@ -14,7 +14,10 @@ def train(model, loss, optimizer, loader, xp, args):
 
     for x, y in loader: #tqdm(loader, disable=not args.tqdm, desc='Train Epoch', leave=False, total=len(loader)):
 
-        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        #(x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        # should now already be moved to cuda
+        x.grad.data.zero_()
+        y.grad.data.zero_()
         
         # forward pass
         scores = model(x)

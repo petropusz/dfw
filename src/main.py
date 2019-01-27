@@ -11,6 +11,12 @@ from models import get_model, load_best_model
 from optim import get_optimizer, decay_optimizer
 from epoch import train, test
 
+def move_set_to_cuda(loader, args):
+    res = []
+    for x, y in loader:
+        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        res.append((x,y))
+    return res
 
 def main(args):
 
@@ -25,10 +31,15 @@ def main(args):
 
     print("Maximal number of epochs:\t{}\n".format(args.epochs))
 
+    train_loader_in_cuda = move_set_to_cuda(loader_train, args)
+    # move to cuda only once
+
     for i in range(args.epochs):
         xp.Epoch.update(1).log()
 
-        train(model, loss, optimizer, loader_train, xp, args)
+
+
+        train(model, loss, optimizer, train_loader_in_cuda, xp, args)
         test(model, loader_val, xp, args)
 
         if (i + 1) in args.T:

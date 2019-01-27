@@ -11,7 +11,6 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
                    cuda, num_workers, split=True):
 
-    # maybe with data in cuda shouldn't use pin_memory
     kwargs = {'num_workers': num_workers, 'pin_memory': True} if cuda else {}
 
     if split:
