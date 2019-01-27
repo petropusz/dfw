@@ -17,7 +17,7 @@ def train(model, loss, optimizer, loader, xp, args):
         #(x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
         # should now already be moved to cuda
         x.grad.data.zero_()
-        y.grad.data.zero_()
+        yA.grad.data.zero_()
         
         # forward pass
         scores = model(x)
