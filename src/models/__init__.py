@@ -34,8 +34,11 @@ def get_model(args):
 
     if args.cuda:
         if args.parallel_gpu:
+            print("Model to parallel GPU CUDA")
+            # use when multiple GPUs accessible
             model = torch.nn.DataParallel(model).cuda()
         else:
+            print("Model to CUDA")
             model = model.cuda()
 
     return model
