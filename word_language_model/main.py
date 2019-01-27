@@ -161,19 +161,15 @@ def train():
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
-        optimizer.step()
-        # for p in model.parameters():
-        #    p.data.add_(-lr, p.grad.data)
+        # optimizer.step()
+        for p in model.parameters():
+            p.data.add_(-lr, p.grad.data)
 
         total_loss += loss.item()
 
         if batch % args.log_interval == 0 and batch > 0:
             cur_loss = total_loss / args.log_interval
             elapsed = time.time() - start_time
-            
-            print("DEBUG {}".format(cur_loss))
-            print("DEBUG {}".format(math.exp(cur_loss)))
-
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
                     'loss {:5.2f} | ppl {:8.2f}'.format(
                 epoch, batch, len(train_data) // args.bptt, lr,
@@ -211,9 +207,9 @@ try:
             with open(args.save, 'wb') as f:
                 torch.save(model, f)
             best_val_loss = val_loss
-        # else:
+        else:
             # Anneal the learning rate if no improvement has been seen in the validation dataset.
-        #    lr /= 4.0
+            lr /= 4.0
 except KeyboardInterrupt:
     print('-' * 89)
     print('Exiting from training early')
