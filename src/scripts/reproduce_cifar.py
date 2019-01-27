@@ -72,8 +72,9 @@ jobs = {
     "BPGRAD-CIFAR-10-DN":
     """python3 main.py --dataset cifar10 --densenet --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
 
-    "BPGRAD-CIFAR-10-DN":
+    "BPGRAD-CIFAR-100-DN":
     """python3 main.py --dataset cifar100 --densenet --opt bpgrad --l2 1e-4 --eta 0.1 --no-tqdm""",
+
 
 }
 

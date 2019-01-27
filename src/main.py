@@ -23,6 +23,8 @@ def main(args):
     optimizer = get_optimizer(args, parameters=model.parameters())
     xp = get_xp(args, model, optimizer)
 
+    print("Maximal number of epochs:\t{}\n".format(args.epochs))
+
     for i in range(args.epochs):
         xp.Epoch.update(1).log()
 
