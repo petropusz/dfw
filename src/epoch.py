@@ -12,9 +12,10 @@ def train(model, loss, optimizer, loader, xp, args):
     xp.Timer_Train.reset()
     stats_dict = {}
 
-    for x, y in tqdm(loader, disable=not args.tqdm, desc='Train Epoch',
-                     leave=False, total=len(loader)):
-        (x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+    for x, y in loader: #tqdm(loader, disable=not args.tqdm, desc='Train Epoch', leave=False, total=len(loader)):
+
+        #(x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
+        # already moved to cuda if cuda set
 
         # forward pass
         scores = model(x)

@@ -11,6 +11,7 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
                    train_size, val_size, test_size, batch_size, test_batch_size,
                    cuda, num_workers, split=True):
 
+    # maybe with data in cuda shouldn't use pin_memory
     kwargs = {'num_workers': num_workers, 'pin_memory': True} if cuda else {}
 
     if split:
@@ -36,6 +37,11 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     dataset_val = Subset(dataset_val, val_indices)
     dataset_test = Subset(dataset_test, test_indices)
 
+    if cuda:
+        for ds in (dataset_train, dataset_val, dataset_test):
+            ds.cuda()
+
+
     print('Dataset sizes: \t train: {} \t val: {} \t test: {}'
           .format(len(dataset_train), len(dataset_val), len(dataset_test)))
     print('Batch size: \t {}'.format(batch_size))
@@ -51,6 +57,10 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     test_loader = data.DataLoader(dataset_test,
                                   batch_size=test_batch_size,
                                   shuffle=False, **kwargs)
+
+    if cuda:
+        for dl in (train_loader, val_loader, test_loader):
+            dl.cuda()
 
     train_loader.tag = 'train'
     val_loader.tag = 'val'
