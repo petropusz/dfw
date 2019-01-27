@@ -125,7 +125,7 @@ def loaders_cifar(dataset, batch_size, cuda,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=4)
+                          batch_size, test_batch_size, cuda, num_workers=8)
 
 
 def loaders_svhn(dataset, batch_size, cuda,
@@ -168,4 +168,4 @@ def loaders_svhn(dataset, batch_size, cuda,
 
     return create_loaders(dataset_train, dataset_val,
                           dataset_test, train_size, val_size, test_size,
-                          batch_size, test_batch_size, cuda, num_workers=4)
+                          batch_size, test_batch_size, cuda, num_workers=8)

@@ -7,19 +7,19 @@ from scheduling import launch
 
 jobs = {
     "SGD-CE":
-    "python3 train_nli.py --opt sgd --eta 1 --loss ce --no-tqdm",
+    "python3 train_nli.py --batch-size 256 --opt sgd --eta 1 --loss ce --no-tqdm",
 
     "SGD-SVM":
-    "python3 train_nli.py --opt sgd --eta 0.1 --loss svm --no-tqdm",
+    "python3 train_nli.py --batch-size 256 --opt sgd --eta 0.1 --loss svm --no-tqdm",
 
     "ADAM-SVM":
-    "python3 train_nli.py --opt adam --eta 1e-4 --loss svm --no-tqdm",
+    "python3 train_nli.py --batch-size 256 --opt adam --eta 1e-4 --loss svm --no-tqdm",
 
     "ADAM-CE":
-    "python3 train_nli.py --opt adam --eta 1e-4 --loss ce --no-tqdm",
+    "python3 train_nli.py --batch-size 256 --opt adam --eta 1e-4 --loss ce --no-tqdm",
 
     "DFW-SVM":
-    "python3 train_nli.py --opt dfw --eta 1 --loss svm --no-tqdm",
+    "python3 train_nli.py --batch-size 256 --opt dfw --eta 1 --loss svm --no-tqdm",
 }
 
 
