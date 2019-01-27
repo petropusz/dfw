@@ -58,9 +58,9 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
                                   batch_size=test_batch_size,
                                   shuffle=False, **kwargs)
 
-    if cuda:
-        for dl in (train_loader, val_loader, test_loader):
-            dl.cuda()
+    #if cuda:
+    #    for dl in (train_loader, val_loader, test_loader):
+    #        dl.cuda()
 
     train_loader.tag = 'train'
     val_loader.tag = 'val'
