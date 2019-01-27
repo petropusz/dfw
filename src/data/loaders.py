@@ -37,9 +37,9 @@ def create_loaders(dataset_train, dataset_val, dataset_test,
     dataset_val = Subset(dataset_val, val_indices)
     dataset_test = Subset(dataset_test, test_indices)
 
-    if cuda:
-        for ds in (dataset_train, dataset_val, dataset_test):
-            ds.cuda()
+    #if cuda:
+    #    for ds in (dataset_train, dataset_val, dataset_test):
+    #        ds.cuda()
 
 
     print('Dataset sizes: \t train: {} \t val: {} \t test: {}'
