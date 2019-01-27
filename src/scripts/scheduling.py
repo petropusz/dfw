@@ -10,7 +10,7 @@ import time
 
 def run_command(command, noprint=True):
     if waitGPU is not None:
-        waitGPU.wait(nproc=0, interval=1, ngpu=1)
+        waitGPU.wait(nproc=2, interval=1, ngpu=1)  # process limit adjusted for better GPU from GCP
     command = " ".join(command.split())
     if noprint:
         command = "{} > /dev/null".format(command)
