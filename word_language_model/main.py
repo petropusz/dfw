@@ -47,7 +47,7 @@ parser.add_argument('--save', type=str, default='model.pt',
                     help='path to save the final model')
 parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
-parser.add_argument("--optim", type=str, default="",
+parser.add_argument("--optim", type=str, default="SGD",
                     help="optimizer type (SGD, DFW)")
 args = parser.parse_args()
 
@@ -94,42 +94,19 @@ val_data = batchify(corpus.valid, eval_batch_size)
 test_data = batchify(corpus.test, eval_batch_size)
 
 ###############################################################################
-# Get optimizer
+# Build the model
 ###############################################################################
-
-
-class NoOptimizer(optim.Optimizer):
-    def __init__(self, params, lr):
-        defaults = dict(lr=lr)
-        super(NoOptimizer, self).__init__(params, defaults)
-
-    def step(self, closure=None):
-        loss = None
-
-        if closure is not None:
-            loss = closure()
-
-        for group in self.param_groups:
-            for p in group['params']:
-                p.data.add_(-group['lr'], p.grad.data)
 
 
 def get_optimizer_loss(args, params):
-    if args.optim == "SGD":
-        opt = optim.SGD(params, lr=args.lr)
-        loss = nn.CrossEntropyLoss()
-    elif args.optim == "DFW":
+    if args.optim == "DFW":
         opt = dfw.DFW(params, lr=args.lr)
         loss = dfw.MultiClassHingeLoss()
     else:
-        opt = NoOptimizer(params, lr=args.lr)
+        opt = optim.SGD(params, lr=args.lr)
         loss = nn.CrossEntropyLoss()
 
     return opt, loss
-
-###############################################################################
-# Build the model
-###############################################################################
 
 
 ntokens = len(corpus.dictionary)
