@@ -47,7 +47,7 @@ parser.add_argument('--save', type=str, default='model.pt',
                     help='path to save the final model')
 parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
-parser.add_argument("--optim", type="str", default="",
+parser.add_argument("--optim", type=str, default="",
                     help="optimizer type (SGD, DFW)")
 args = parser.parse_args()
 
