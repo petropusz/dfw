@@ -10,8 +10,7 @@ import torch.optim as optim
 
 import data
 import model
-
-with_optimizer = False
+import dfw
 
 parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='./data/wikitext-2',
@@ -48,6 +47,8 @@ parser.add_argument('--save', type=str, default='model.pt',
                     help='path to save the final model')
 parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
+parser.add_argument("--optim", type="str", default="",
+                    help="optimizer type (SGD, DFW)")
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -93,14 +94,47 @@ val_data = batchify(corpus.valid, eval_batch_size)
 test_data = batchify(corpus.test, eval_batch_size)
 
 ###############################################################################
+# Get optimizer
+###############################################################################
+
+
+class NoOptimizer(optim.Optimizer):
+    def __init__(self, params, lr):
+        defaults = dict(lr=lr)
+        super(DFW, self).__init__(params, defaults)
+
+    def step(self, closure=None):
+        loss = None
+
+        if closure is not None:
+            loss = closure()
+
+        for p in group['params']:
+            p.data.add_(-group['lr'], p.grad.data)
+
+
+def get_optimizer_loss(opt_type, lr, params):
+    if opt_type == "SGD":
+        opt = optim.SGD(params, lr=args.lr)
+        loss = nn.CrossEntropyLoss()
+    else if opt_type == "DFW":
+        opt = dfw.DFW(params, lr=args.lr)
+        loss = dfw.MultiClassHingeLoss()
+    else:
+        opt = NoOptimizer(params, lr=args.lr)
+        loss = nn.CrossEntropyLoss()
+
+    return opt, loss
+
+###############################################################################
 # Build the model
 ###############################################################################
+
 
 ntokens = len(corpus.dictionary)
 model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.tied).to(device)
-optimizer = optim.SGD(model.parameters(), lr=args.lr)
-criterion = nn.CrossEntropyLoss()
+optimizer, criterion = get_optimizer_loss(args.optim, args.lr, model.parameters())
 
 ###############################################################################
 # Training code
@@ -161,23 +195,14 @@ def train():
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
         hidden = repackage_hidden(hidden)
         model.zero_grad()
-
-        if with_optimizer:
-            optimizer.zero_grad()
-
+        optimizer.zero_grad()
         output, hidden = model(data, hidden)
         loss = criterion(output.view(-1, ntokens), targets)
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
-
-        if with_optimizer:
-            optimizer.step()
-        else:
-            for p in model.parameters():
-                p.data.add_(-lr, p.grad.data)
-
+        optimizer.step()
         total_loss += loss.item()
 
         if batch % args.log_interval == 0 and batch > 0:
@@ -185,7 +210,7 @@ def train():
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
                   'loss {:5.2f} | ppl {:8.2f}'.format(
-                      epoch, batch, len(train_data) // args.bptt, lr,
+                      epoch, batch, len(train_data) // args.bptt, optimizer.param_groups[0]["lr"],
                       elapsed * 1000 / args.log_interval, cur_loss, math.exp(cur_loss)))
             total_loss = 0
             start_time = time.time()
@@ -201,7 +226,6 @@ def export_onnx(path, batch_size, seq_len):
 
 
 # Loop over epochs.
-lr = args.lr
 best_val_loss = None
 
 # At any point you can hit Ctrl + C to break out of training early.
@@ -222,10 +246,7 @@ try:
             best_val_loss = val_loss
         else:
             # Anneal the learning rate if no improvement has been seen in the validation dataset.
-            if with_optimizer:
-                optimizer.param_groups[0]["lr"] /= 4.0
-            else:
-                lr /= 4.0
+            optimizer.param_groups[0]["lr"] /= 4.0
 except KeyboardInterrupt:
     print('-' * 89)
     print('Exiting from training early')
