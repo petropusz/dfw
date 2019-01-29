@@ -14,13 +14,13 @@ class DFW(optim.Optimizer):
     Args:
         params (iterable): iterable of parameters to optimize or dicts defining
             parameter groups
-        eta (float): initial learning rate
+        lr (float): initial learning rate
         momentum (float, optional): momentum factor (default: 0)
         weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
         eps (float, optional): small constant for numerical stability (default: 1e-5)
 
     Example:
-        >>> optimizer = DFW(model.parameters(), eta=1, momentum=0.9, weight_decay=1e-4)
+        >>> optimizer = DFW(model.parameters(), lr=1, momentum=0.9, weight_decay=1e-4)
         >>> optimizer.zero_grad()
         >>> loss_value = loss_fn(model(input), target)
         >>> loss_value.backward()
@@ -37,15 +37,15 @@ class DFW(optim.Optimizer):
         https://arxiv.org/abs/1811.07591.
     """
 
-    def __init__(self, params, eta=required, momentum=0, weight_decay=0, eps=1e-5):
-        if eta is not required and eta <= 0.0:
-            raise ValueError("Invalid eta: {}".format(eta))
+    def __init__(self, params, lr=required, momentum=0, weight_decay=0, eps=1e-5):
+        if lr is not required and lr <= 0.0:
+            raise ValueError("Invalid lr: {}".format(lr))
         if momentum < 0.0:
             raise ValueError("Invalid momentum value: {}".format(momentum))
         if weight_decay < 0.0:
             raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
 
-        defaults = dict(eta=eta, momentum=momentum, weight_decay=weight_decay)
+        defaults = dict(lr=lr, momentum=momentum, weight_decay=weight_decay)
         super(DFW, self).__init__(params, defaults)
         self.eps = eps
 
@@ -69,18 +69,18 @@ class DFW(optim.Optimizer):
         self._line_search(loss, w_dict)
 
         for group in self.param_groups:
-            eta = group['eta']
+            lr = group['lr']
             mu = group['momentum']
             for param in group['params']:
                 state = self.state[param]
                 delta_t, r_t = w_dict[param]['delta_t'], w_dict[param]['r_t']
 
-                param.data -= eta * (r_t + self.gamma * delta_t)
+                param.data -= lr * (r_t + self.gamma * delta_t)
 
                 if mu:
                     z_t = state['momentum_buffer']
                     z_t *= mu
-                    z_t -= eta * self.gamma * (delta_t + r_t)
+                    z_t -= lr * self.gamma * (delta_t + r_t)
                     param.data += mu * z_t
 
     @torch.autograd.no_grad()
@@ -93,10 +93,10 @@ class DFW(optim.Optimizer):
         denom = 0
 
         for group in self.param_groups:
-            eta = group['eta']
+            lr = group['lr']
             for param in group['params']:
                 delta_t, r_t = w_dict[param]['delta_t'], w_dict[param]['r_t']
-                num -= eta * torch.sum(delta_t * r_t)
-                denom += eta * delta_t.norm() ** 2
+                num -= lr * torch.sum(delta_t * r_t)
+                denom += lr * delta_t.norm() ** 2
 
         self.gamma = float((num / (denom + self.eps)).clamp(min=0, max=1))

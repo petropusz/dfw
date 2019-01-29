@@ -100,7 +100,7 @@ test_data = batchify(corpus.test, eval_batch_size)
 
 def get_optimizer_loss(args, params):
     if args.optim == "DFW":
-        opt = dfw.DFW(params, eta=args.lr)
+        opt = dfw.DFW(params, lr=args.lr)
         loss = dfw.MultiClassHingeLoss()
     else:
         opt = optim.SGD(params, lr=args.lr)
