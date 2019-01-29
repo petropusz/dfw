@@ -102,9 +102,12 @@ def get_optimizer_loss(args, params):
     if args.optim == "DFW":
         opt = dfw.DFW(params, lr=args.lr)
         loss = dfw.MultiClassHingeLoss()
-    else:
+    elif:
         opt = optim.SGD(params, lr=args.lr)
         loss = nn.CrossEntropyLoss()
+    else:
+        raise ValueError("""An invalid option for `--optim` was supplied,
+                         options are ['SGD', 'DFW']""")
 
     return opt, loss
 
