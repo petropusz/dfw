@@ -109,8 +109,9 @@ class NoOptimizer(optim.Optimizer):
         if closure is not None:
             loss = closure()
 
-        for p in group['params']:
-            p.data.add_(-group['lr'], p.grad.data)
+        for group in self.param_groups:
+            for p in group['params']:
+                p.data.add_(-group['lr'], p.grad.data)
 
 
 def get_optimizer_loss(args, params):
