@@ -100,7 +100,7 @@ test_data = batchify(corpus.test, eval_batch_size)
 
 def get_optimizer_loss(args, params):
     if args.optim == "DFW":
-        opt = dfw.DFW(params, lr=args.lr)
+        opt = dfw.DFW(params, eta=args.lr)
         loss = dfw.MultiClassHingeLoss()
     else:
         opt = optim.SGD(params, lr=args.lr)
@@ -180,7 +180,7 @@ def train():
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
-        optimizer.step()
+        optimizer.step(lambda: float(loss.item()))
         total_loss += loss.item()
 
         if batch % args.log_interval == 0 and batch > 0:
