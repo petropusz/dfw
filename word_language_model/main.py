@@ -113,11 +113,11 @@ class NoOptimizer(optim.Optimizer):
             p.data.add_(-group['lr'], p.grad.data)
 
 
-def get_optimizer_loss(opt_type, lr, params):
-    if opt_type == "SGD":
+def get_optimizer_loss(args, params):
+    if args.optim == "SGD":
         opt = optim.SGD(params, lr=args.lr)
         loss = nn.CrossEntropyLoss()
-    else if opt_type == "DFW":
+    elif args.optim == "DFW":
         opt = dfw.DFW(params, lr=args.lr)
         loss = dfw.MultiClassHingeLoss()
     else:
@@ -134,7 +134,7 @@ def get_optimizer_loss(opt_type, lr, params):
 ntokens = len(corpus.dictionary)
 model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.tied).to(device)
-optimizer, criterion = get_optimizer_loss(args.optim, args.lr, model.parameters())
+optimizer, criterion = get_optimizer_loss(args, model.parameters())
 
 ###############################################################################
 # Training code
