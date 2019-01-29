@@ -11,6 +11,8 @@ import torch.optim as optim
 import data
 import model
 
+with_optimizer = False
+
 parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 RNN/LSTM Language Model')
 parser.add_argument('--data', type=str, default='./data/wikitext-2',
                     help='location of the data corpus')
@@ -74,6 +76,7 @@ corpus = data.Corpus(args.data)
 # dependence of e. g. 'g' on 'f' can not be learned, but allows more efficient
 # batch processing.
 
+
 def batchify(data, bsz):
     # Work out how cleanly we can divide the dataset into bsz parts.
     nbatch = data.size(0) // bsz
@@ -82,6 +85,7 @@ def batchify(data, bsz):
     # Evenly divide the data across the bsz batches.
     data = data.view(bsz, -1).t().contiguous()
     return data.to(device)
+
 
 eval_batch_size = 10
 train_data = batchify(corpus.train, args.batch_size)
@@ -93,13 +97,15 @@ test_data = batchify(corpus.test, eval_batch_size)
 ###############################################################################
 
 ntokens = len(corpus.dictionary)
-model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid, args.nlayers, args.dropout, args.tied).to(device)
+model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid,
+                       args.nlayers, args.dropout, args.tied).to(device)
 optimizer = optim.Adam(model.parameters(), lr=args.lr)
 criterion = nn.CrossEntropyLoss()
 
 ###############################################################################
 # Training code
 ###############################################################################
+
 
 def repackage_hidden(h):
     """Wraps hidden states in new Tensors, to detach them from their history."""
@@ -161,9 +167,12 @@ def train():
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
         torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
-        # optimizer.step()
-        for p in model.parameters():
-            p.data.add_(-lr, p.grad.data)
+
+        if with_optimizer:
+            optimizer.step()
+        else:
+            for p in model.parameters():
+                p.data.add_(-lr, p.grad.data)
 
         total_loss += loss.item()
 
@@ -171,9 +180,9 @@ def train():
             cur_loss = total_loss / args.log_interval
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
-                    'loss {:5.2f} | ppl {:8.2f}'.format(
-                epoch, batch, len(train_data) // args.bptt, lr,
-                elapsed * 1000 / args.log_interval, cur_loss, math.exp(cur_loss)))
+                  'loss {:5.2f} | ppl {:8.2f}'.format(
+                      epoch, batch, len(train_data) // args.bptt, lr,
+                      elapsed * 1000 / args.log_interval, cur_loss, math.exp(cur_loss)))
             total_loss = 0
             start_time = time.time()
 
@@ -199,15 +208,15 @@ try:
         val_loss = evaluate(val_data)
         print('-' * 89)
         print('| end of epoch {:3d} | time: {:5.2f}s | valid loss {:5.2f} | '
-                'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
-                                           val_loss, math.exp(val_loss)))
+              'valid ppl {:8.2f}'.format(epoch, (time.time() - epoch_start_time),
+                                         val_loss, math.exp(val_loss)))
         print('-' * 89)
         # Save the model if the validation loss is the best we've seen so far.
         if not best_val_loss or val_loss < best_val_loss:
             with open(args.save, 'wb') as f:
                 torch.save(model, f)
             best_val_loss = val_loss
-        else:
+        else if not with_optimizer:
             # Anneal the learning rate if no improvement has been seen in the validation dataset.
             lr /= 4.0
 except KeyboardInterrupt:
