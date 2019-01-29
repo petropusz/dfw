@@ -101,7 +101,7 @@ test_data = batchify(corpus.test, eval_batch_size)
 class NoOptimizer(optim.Optimizer):
     def __init__(self, params, lr):
         defaults = dict(lr=lr)
-        super(DFW, self).__init__(params, defaults)
+        super(NoOptimizer, self).__init__(params, defaults)
 
     def step(self, closure=None):
         loss = None
