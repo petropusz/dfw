@@ -49,6 +49,8 @@ parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
 parser.add_argument("--optim", type=str, default="SGD",
                     help="optimizer type (SGD, DFW)")
+parser.add_argument("--loss", type=str, default="CE",
+                    help="optimizer type (CE, SVM)")
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -98,21 +100,29 @@ test_data = batchify(corpus.test, eval_batch_size)
 ###############################################################################
 
 
-def get_optimizer_loss(args, params):
+def get_optimizer(args, params):
     if args.optim == "DFW":
         opt = dfw.DFW(params, lr=args.lr)
-        loss = dfw.MultiClassHingeLoss()
     else:
         opt = optim.SGD(params, lr=args.lr)
+
+    return opt
+
+
+def get_loss(args):
+    if args.loss == "SVM":
+        loss = dfw.MultiClassHingeLoss()
+    else:
         loss = nn.CrossEntropyLoss()
 
-    return opt, loss
+    return loss
 
 
 ntokens = len(corpus.dictionary)
 model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.tied).to(device)
-optimizer, criterion = get_optimizer_loss(args, model.parameters())
+optimizer = get_optimizer(args, model.parameters())
+criterion = get_loss(args)
 
 ###############################################################################
 # Training code
