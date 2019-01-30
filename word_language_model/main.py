@@ -49,6 +49,8 @@ parser.add_argument('--onnx-export', type=str, default='',
                     help='path to export the final model in onnx format')
 parser.add_argument("--optim", type=str, default="SGD",
                     help="optimizer type (SGD, DFW)")
+parser.add_argument("--loss", type=str, default="CE",
+                    help="optimizer type (CE, SVM)")
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -98,24 +100,35 @@ test_data = batchify(corpus.test, eval_batch_size)
 ###############################################################################
 
 
-def get_optimizer_loss(args, params):
+def get_optimizer(args, params):
     if args.optim == "DFW":
         opt = dfw.DFW(params, lr=args.lr)
-        loss = dfw.MultiClassHingeLoss()
-    elif:
+    elif args.optim == "SGD":
         opt = optim.SGD(params, lr=args.lr)
-        loss = nn.CrossEntropyLoss()
     else:
         raise ValueError("""An invalid option for `--optim` was supplied,
                          options are ['SGD', 'DFW']""")
 
-    return opt, loss
+    return opt
+
+
+def get_loss(args):
+    if args.loss == "SVM":
+        loss = dfw.MultiClassHingeLoss()
+    elif args.loss == "CE":
+        loss = nn.CrossEntropyLoss()
+    else:
+        raise ValueError("""An invalid option for `--loss` was supplied,
+                         options are ['CE', 'SVM']""")
+
+    return loss
 
 
 ntokens = len(corpus.dictionary)
 model = model.RNNModel(args.model, ntokens, args.emsize, args.nhid,
                        args.nlayers, args.dropout, args.tied).to(device)
-optimizer, criterion = get_optimizer_loss(args, model.parameters())
+optimizer = get_optimizer(args, model.parameters())
+criterion = get_loss(args)
 
 ###############################################################################
 # Training code
@@ -225,7 +238,7 @@ try:
             with open(args.save, 'wb') as f:
                 torch.save(model, f)
             best_val_loss = val_loss
-        else:
+        elif args.optim == "SGD":
             # Anneal the learning rate if no improvement has been seen in the validation dataset.
             optimizer.param_groups[0]["lr"] /= 4.0
 except KeyboardInterrupt:
