@@ -1,4 +1,5 @@
 import torch
+import time
 
 from tqdm import tqdm
 from losses import set_smoothing_enabled
@@ -12,6 +13,9 @@ def train(model, loss, optimizer, loader, xp, args):
     xp.Timer_Train.reset()
     stats_dict = {}
 
+    time0 = time.time()
+    # SPRÓBOWAĆ IN_MEMORY DATA LOADER Z NOTATEK DO WYKŁADU
+    # można sobie pomierzyć czas ile branie z loadera, a ile reszta iteracji
     for x, y in loader: #tqdm(loader, disable=not args.tqdm, desc='Train Epoch', leave=False, total=len(loader)):
 
         #(x, y) = (x.cuda(), y.cuda()) if args.cuda else (x, y)
@@ -19,6 +23,8 @@ def train(model, loss, optimizer, loader, xp, args):
         #x.grad.data.zero_()
         #y.grad.data.zero_()
         
+        time1 = time.time()
+
         # forward pass
         scores = model(x)
 
@@ -39,6 +45,12 @@ def train(model, loss, optimizer, loader, xp, args):
         stats_dict['gamma'] = float(optimizer.gamma)
         stats_dict['size'] = float(scores.size(0))
         update_metrics(xp, stats_dict)
+
+        print("Load time: {}".format(time1 - time0))
+
+        time0 = time.time()
+
+        print("Exec time: {}".format(time0 - time1))
 
     xp.Eta.update(optimizer.eta)
     xp.Reg.update(regularization(model, args.l2))
