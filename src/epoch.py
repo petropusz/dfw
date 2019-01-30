@@ -28,13 +28,22 @@ def train(model, loss, optimizer, loader, xp, args):
         # forward pass
         scores = model(x)
 
+        print("time0: {}".format(time.time() - time1))
+
         # compute the loss function, possibly using smoothing
         with set_smoothing_enabled(args.smooth_svm):
             loss_value = loss(scores, y)
 
+        print("time1: {}".format(time.time() - time1))
+
         # backward pass
         optimizer.zero_grad()
+
+        print("time2: {}".format(time.time() - time1))
+
         loss_value.backward()
+
+        print("time3: {}".format(time.time() - time1))
 
         # optimization step
         optimizer.step(lambda: float(loss_value))
