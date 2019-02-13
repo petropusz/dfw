@@ -192,7 +192,7 @@ def train():
         optimizer.zero_grad()
         output, hidden = model(data, hidden)
 
-        with set_smoothing_enabled(args.loss == "SVMS"):
+        with dfw.set_smoothing_enabled(args.loss == "SVMS"):
             loss = criterion(output.view(-1, ntokens), targets)
 
         loss.backward()
