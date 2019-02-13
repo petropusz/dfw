@@ -50,7 +50,7 @@ parser.add_argument('--onnx-export', type=str, default='',
 parser.add_argument("--optim", type=str, default="SGD",
                     help="optimizer type (SGD, DFW)")
 parser.add_argument("--loss", type=str, default="CE",
-                    help="optimizer type (CE, SVM)")
+                    help="optimizer type (CE, SVM, SVMS)")
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -113,7 +113,7 @@ def get_optimizer(args, params):
 
 
 def get_loss(args):
-    if args.loss == "SVM":
+    if args.loss == "SVM" or args.loss == "SVMS":
         loss = dfw.MultiClassHingeLoss()
     elif args.loss == "CE":
         loss = nn.CrossEntropyLoss()
@@ -191,7 +191,10 @@ def train():
         model.zero_grad()
         optimizer.zero_grad()
         output, hidden = model(data, hidden)
-        loss = criterion(output.view(-1, ntokens), targets)
+
+        with set_smoothing_enabled(args.loss == "SVMS"):
+            loss = criterion(output.view(-1, ntokens), targets)
+
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
