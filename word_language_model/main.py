@@ -50,7 +50,7 @@ parser.add_argument('--onnx-export', type=str, default='',
 parser.add_argument("--optim", type=str, default="SGD",
                     help="optimizer type (SGD, DFW)")
 parser.add_argument("--loss", type=str, default="CE",
-                    help="optimizer type (CE, SVM, SVMS)")
+                    help="loss function type (CE, SVM, SVMS)")
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
