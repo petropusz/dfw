@@ -100,6 +100,4 @@ class DFW(optim.Optimizer):
                 num -= lr * torch.sum(delta_t * r_t)
                 denom += lr * delta_t.norm() ** 2
 
-        self.gamma_r = float(num / (denom + self.eps))
-        self.gamma_c = float((num / (denom + self.eps)).clamp(min=0, max=1))
-        self.gamma = self.gamma_c
+        self.gamma = float((num / (denom + self.eps)).clamp(min=0, max=1))
