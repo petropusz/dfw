@@ -203,7 +203,8 @@ def train():
         total_loss += loss.item()
 
         if batch % args.log_interval == 0 and batch > 0:
-            learn_rate = optimizer.param_groups[0]["lr"] if args.optim == "SGD" else optimizer.param_groups[0]["lr"] * optimizer.gamma_real
+            learn_rate = optimizer.param_groups[0]["lr"] if args.optim == "SGD" \
+                else optimizer.param_groups[0]["lr"] * optimizer.gamma_r
             cur_loss = total_loss / args.log_interval
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:08.8f} | ms/batch {:5.2f} | '
