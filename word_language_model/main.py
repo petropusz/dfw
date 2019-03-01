@@ -198,9 +198,9 @@ def train():
         loss.backward()
 
         # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
-        torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
+        # torch.nn.utils.clip_grad_norm_(model.parameters(), args.clip)
         optimizer.step(lambda: float(loss.item()))
-        total_loss += loss.item()
+        total_loss += float(loss.item())
 
         if batch % args.log_interval == 0 and batch > 0:
             learn_rate = optimizer.param_groups[0]["lr"] if args.optim == "SGD" \
